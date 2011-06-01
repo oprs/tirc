@@ -71,7 +71,7 @@ extern int errno;
 #define CNAMESZ		201	/* size of a channel name + NUL */
 #define MSGSZ		513	/* size of an IRC message + NUL */
 #define BUFSZ		4000	/* general buffer size */
-#define MAXSCMD		600	/* highest command number in IRC protocol */
+#define MAXSCMD		999	/* highest command number in IRC protocol */
 #define MAXINPUT	510	/* length of editor line */
 #define HISTORY		100	/* number of lines in input history */
 #define BACKSCROLL	1200	/* number of lines in window backscroll */
