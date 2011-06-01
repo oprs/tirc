@@ -278,7 +278,7 @@ Be prepared to encounter bugs.\n");
 	fprintf(stderr, "DEBUG: visual debug output active.\n");
 #endif
 	/* Parse the startup file(s) */
-	readrc("/usr/local/share/tircrc");
+	readrc("/etc/tirc/tircrc");
 
 	if ((home = getenv("HOME")) == NULL)
 		return 1;

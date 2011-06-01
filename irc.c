@@ -53,6 +53,7 @@ static char	*skipspace __P((char *));
 #define TIMESTAMP	(is_away || check_conf(CONF_STAMP)) ? timestamp() : ""
 #define NICKORPREFIX(n)	(*(n) != '\0') ? (n) : sm->sm_prefix
 #define	PPREORNUM(sm)	((sm)->sm_anum)
+#define ISCHANNEL(s)	(((*s)=='#')||((*s)=='&')||((*s)=='+')||((*s)=='!'))
 
 static void	cmd_ignore __P((struct servmsg *));
 static void	cmd_nonum __P((struct servmsg *));
@@ -895,7 +896,7 @@ cmd_nonum(sm)
 		/* 
 		 * Is recipient a channel window?
 		 */
-		if (*sm->sm_par[0] == '#' || *sm->sm_par[0] == '&') {
+		if (ISCHANNEL(sm->sm_par[0])) {
 		    int fgc, bgc;
 		    static char nocs[] = "";
 		    char *colstr, *coloff;
@@ -1463,8 +1464,7 @@ parse_mode(sm)
 		return;
 	from_nick(sm, from);
 
-	if (*sm->sm_par[0] == '&' || *sm->sm_par[0] == '#') {
-
+	if (ISCHANNEL(sm->sm_par[0])) {
 		/*
 		 * Change channel mode.
 		 */
@@ -1989,8 +1989,7 @@ privmsg(target, txt, silent)
 		return;
 	}
 
-	if (target != NULL && *target != '&' && *target != '#' &&
-	    *target != '!') {
+	if (target != NULL && !ISCHANNEL(target)) {
 		if (*target != '=') {
 		    /* PRIVMSG to a user */
 		    dprintf(sock, "PRIVMSG %s :%s\r\n", target, txt);
@@ -2105,7 +2104,7 @@ notice(target, txt, silent)
 
 		if (silent)
 			return;
-		if (*target != '&' && *target != '#')
+		if (!ISCHANNEL(target))
 			sprintf(t, "-> -%s- %s\n", target, txt);
 		else
 			sprintf(t, "-%s-> %s\n", target, txt);
@@ -2150,7 +2149,7 @@ ctcpmsg(sm)
 		if ((t = strchr(sm->sm_par[1]+1, '\1')) != NULL)
 			*t = 0;
 		/* Is recipient a channel window? */
-		if (*sm->sm_par[0] == '#' || *sm->sm_par[0] == '&') {
+		if (ISCHANNEL(sm->sm_par[0])) {
 			if ((ch = getchanbyname(sm->sm_par[0])) == NULL)
 				return;
 			t = strchr(sm->sm_par[1], ' ');
@@ -2570,7 +2569,7 @@ cmd_unavailable(sm)
 
 	cmd_print(sm);
 
-	if (*sm->sm_par[1] == '#' || *sm->sm_par[1] == '&')
+	if (ISCHANNEL(sm->sm_par[1]))
 		return;
 
 	sprintf(nuprompt, "Enter nickname: ");

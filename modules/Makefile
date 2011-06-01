@@ -5,24 +5,24 @@
 DLCFLAGS=
 DLLDFLAGS=
 
-CC      =cc
+CC      =gcc
 INCLUDES=-I../..
-CPPFLAGS=$(INCLUDES)  
-CPP     =cc -E $(CPPFLAGS)
+CPPFLAGS=$(INCLUDES)  -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 -D__USE_BSD -D__USE_BSD_SIGNAL 
+CPP     =gcc -E $(CPPFLAGS)
 LINT    =
 CXREF   =
 OPTFLAG =-O2
-CFLAGS  =$(OPTFLAG) $(INCLUDES)  
-LDFLAGS =    -ltermcap
-LINTFLAGS=$(CPPFLAGS) -g -s
-CXFLAGS =-xref all -html $(CPPFLAGS)
-prefix  =/usr/local
+CFLAGS  =$(OPTFLAG) $(INCLUDES)  -Wall 
+LDFLAGS =  -export-dynamic -ldl  -ltermcap
+LINTFLAGS=$(CPPFLAGS) 
+CXFLAGS = $(CPPFLAGS)
+prefix  =/usr
 exec_prefix=${prefix}
 bindir  =${exec_prefix}/bin
 datadir =${prefix}/share
-mandir  =${prefix}/man
+mandir  =/usr/share
 INSTALL =/usr/bin/install -c
-MKDEP   =/usr/bin/mkdep
+MKDEP   =./mkdep.sh
 DINST   =$(INSTALL) -m644
 
 .c.o:

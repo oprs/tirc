@@ -1,8 +1,8 @@
 #	$Id$
 
-#CFLAGS	=$(INCLUDES) -c -fpic
-#LDFLAGS	=-shared -call_shared -no_archive
-#LDFLAGS	=-nostdlib -shared -Xlinker -Bshareable -Xlinker -Bdynamic
+CFLAGS	=$(INCLUDES) -I../.. -c -fpic
+LDFLAGS	=-shared -call_shared -no_archive
+LDFLAGS	=-nostdlib -shared -Xlinker -Bshareable -Xlinker -Bdynamic
 
 all:	hello.so
 

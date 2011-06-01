@@ -39,13 +39,13 @@ LOBJ	=main.ln irc.ln ircx.ln input.ln cmd.ln screen.ln tty.ln flood.ln\
 	system.ln dcc.ln shm.ln compat.ln url.ln colour.ln strtoul.ln ncol.ln\
 	dl.ln dlapi.ln hook.ln odlg.ln
 
-all:	depend tirc tags
+all:	depend tirc
 
 clean:	
 	rm -f core *.core core.* *third* *.3log tirc *.o *.u *.ln *.html cxref.* mprof.*
 
 distclean: clean
-	rm -f config.cache config.status config.log config.h Makefile conftest* ht.h regex.h tags
+	rm -f config.cache config.status config.log config.h Makefile conftest* ht.h regex.h
 
 install: tirc tirc.1
 	$(BINST) tirc $(bindir)

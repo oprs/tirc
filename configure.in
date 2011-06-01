@@ -355,6 +355,10 @@ if test "$tirc_cv_have_tparm" = no; then
 		[tirc_cv_have_tparm=no])
 fi
 if test "$tirc_cv_have_tparm" = no; then
+	AC_CHECK_LIB(ncursesw, tparm, [tirc_cv_have_tparm=ncursesw],
+		[tirc_cv_have_tparm=no])
+fi
+if test "$tirc_cv_have_tparm" = no; then
 	AC_CHECK_LIB(ncurses, tparm, [tirc_cv_have_tparm=ncurses],
 		[tirc_cv_have_tparm=no])
 fi
@@ -387,6 +391,8 @@ if test "$tirc_cv_have_tparm" != no; then
 			AC_DEFINE(HAVE_TERMLIB);;
 	    curses)	AC_CHECK_HEADERS(curses.h term.h)
 			AC_DEFINE(HAVE_CURSES);;
+	    ncursesw)	AC_CHECK_HEADERS(ncursesw/ncurses.h, ncursesw/curses.h, ncursesw/term.h)
+			AC_DEFINE(HAVE_NCURSESW);;
 	    ncurses)	AC_CHECK_HEADERS(ncurses.h curses.h term.h)
 			AC_DEFINE(HAVE_NCURSES);;
 	    esac

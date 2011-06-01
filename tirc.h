@@ -67,7 +67,7 @@ extern int errno;
  * traditional malloc implementations.
  */
 #define	DGMAXDESC	256	/* highest possible descriptor for dgets()+1 */
-#define	NICKSZ		9	/* size of nickname string \ NUL */
+#define	NICKSZ		33	/* size of nickname string \ NUL */
 #define CNAMESZ		201	/* size of a channel name + NUL */
 #define MSGSZ		513	/* size of an IRC message + NUL */
 #define BUFSZ		4000	/* general buffer size */
