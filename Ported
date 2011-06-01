@@ -1,0 +1,56 @@
+$Old: Ported,v 1.18 1998/02/18 20:13:54 token Exp $
+
+Tested TIRC on the following systems:
+(unless specified, the native C compiler was used for compiling;
+ Note that not all versions have been tested on all of the listed
+ platforms, some tests might eventually be outdated)
+
+* OpenBSD (i386) 2.1, 2.2, 2.4 (mkb, mcl)
+
+* FreeBSD (i386) 2.1.0, 2.1.5, 2.1.7, 2.2.x, 3.0 (mkb, mcl, rjc)
+
+* NetBSD (m68k) 1.2 (mkb)
+
+* NetBSD (i386) 1.3 (mkb)
+
+* NetBSD (sparc) 1.3.2 (logix, mkb)
+
+* Digital UNIX (alpha) 3.2, 4.0B (mkb)
+
+* AIX 4.1 (ppc) (mkb)
+	Due to a broken setup (no license server running) I was only able
+	to try gcc so far; spits out a whole truckload of assembler error
+	messages and ld warnings, but works fine
+	[no recent versions have been tested on this platform]
+
+* SuSe, RedHat, Slackware, Debian GNU/Linux (i386) (mkb, others)
+	Tried with linux revisions around 2.0.30; broken mmap(2)
+	Upgrading to the new generic Gnu libc seems to break sys/shm.h
+	and/or sys/ipc.h.  TIRC won't compile on these systems.
+	There is no workaround available now, except using the older
+	Linux libc.
+
+* SunOS 5.5.1, 5.6 (sparc, ultrasparc) (master, shrike, double-p)
+
+* IRIX 5.3 (mips) (mkb)
+	Doesn't have posix regexp, using basic regexp instead
+	"rm -f" seems to return exit code 1, if one of the files doesn't
+	exist.  This may break make clean/distclean;
+	type "make clean; make all" in that case
+	[no recent versions have been tested on this platform]
+
+* HP-UX 10.10, 10.01b (hppa) (mkb, thanos)
+	If you don't have c89 installed (using the castrated compiler),
+	mkdep doesn't work as expected.
+	That is not a problem, tho, since it does not affect the actual
+	compiling.
+	---
+	TIRC 1.0 does not work on HP-UX 10.10 (at least not when I tested).
+	It compiles fine, yet somehow seems to take a long nap after starting.
+	I suspect that the snprintf implementation doesn't work on PHUX.
+	If anybody would help me with this, and supply a patch or hints,
+	I would be grateful.  I don't want to investigate any more in this
+	right now.
+
+* SINIX-L/SVR4 5.41 (i386) (hyper)
+

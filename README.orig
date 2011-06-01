@@ -1,0 +1,396 @@
+
+
+
+
+
+
+
+
+	      TTIIRRCC SSoouurrccee PPaacckkaaggee DDeessccrriippttiioonn
+
+
+_P_l_e_a_s_e _r_e_a_d _t_h_i_s _d_o_c_u_m_e_n_t _i_n _e_n_t_i_t_y _b_e_f_o_r_e _c_o_n_f_i_g_u_r_i_n_g_, _b_u_i_l_d_i_n_g
+		 _a_n_d _i_n_s_t_a_l_l_i_n_g _t_h_e _c_l_i_e_n_t
+
+
+
+
+AAbbssttrraacctt
+
+     This is release 1.1 of token's IRC client for UNIX1 and
+similar systems.
+
+TIRC comes without warranty.  Please see  the  file  ``COPY-
+RIGHT'' for the copyright statement, the usage and distribu-
+tion license and the warranty disclaimer.
+
+     Since I wrote this	 program  for  myself,	I  am  quite
+reluctant  to  add  "improvements" that reflect the personal
+taste of other people (but not mine).  TIRC isn't  a  do-it-
+all tool for IRC and I place stability and efficiency higher
+than featurism.	 If you don't like it, use  ircII  or  what-
+ever.  Nevertheless, I am grateful for bug reports which you
+may send (no corefiles or similar heavy-weighted  junk!)  to
+token@mayn.de.
+
+Please	read the file ``FAQ'' for answers to some frequently
+asked questions.
+
+     TIRC is written for and tested on	the  following	sys-
+tems:  FreeBSD	2.1 and higher, OpenBSD 2.1, NetBSD 1.2, AIX
+4.x, IRIX 5.3, DEC Unix 3.x and 4.0,  Solaris  2.5,  RedHat,
+SuSe  and  Slackware  GNU/-  Linux,  and works on some more.
+Look at the file ``Ported'' for a complete listing of  envi-
+ronments where TIRC has been successfully run on.
+
+TIRC  now uses a Gnu autoconf generated configure script and
+has been enhanced to be a bit more portable.  See the build-
+ing section below.
+
+The source code is written in portable C style and the oper-
+ating system should at best exhibit some 4.4BSD or SVR4	 and
+POSIX behaviour.  The source should translate with pre-Stan-
+dard compilers (K&R Unix compilers like those  derived	from
+pcc) as well as with (ANSI/ISO) Standard C compilers.
+
+
+____________________
+   1UNIX is a registered trademark of The Open Group.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HHiigghhlliigghhttss
+
+     (features that other clients probably don't have):
+
+ +o Comfortable	backscroll  buffers with regex search mecha-
+   nism in multiple screen regions
+ +o Full ircd 2.9 support
+ +o DCC RESUME (mIRC compatible)
+ +o vi-like editor line and general usage  (rudimentary	sup-
+   port for emacs users exists, too)
+ +o Multiple pages that contain window regions
+ +o Nickname completion
+ +o DCC	is  handled  by	 child	processes,  allowing  faster
+   response in the master client, higher DCC throughput	 and
+   scheduling of the DCC processes
+ +o Efficient flood protection with source-mask detection and
+   ignore, you can't get flooded off with this client
+ +o ChanOp-On-Demand facility; yes this is bot-like but	it's
+   the	smallest  evil	(compared to autoop and other stupid
+   things)
+ +o URL catcher with html generation
+ +o Functionality that elsewhere needs to be  implemented  in
+   scripts  is	hardcoded,  no need for a scripting language
+   (bot operating system, yuck)
+ +o Fast terminal-i/o, no curses bugs (doesn't use curses for
+   tty i/o)
+ +o Terminal ANSI-colour support, freely configurable
+ +o Fast	 and  pretty small, doesn't eat much resources, nei-
+   ther on disk nor when executing
+ +o Relatively clean implementation (ISO-C and POSIX  compli-
+   ance when possible, regularly linted and checked for mem-
+   ory leaks)
+ +o All you need is a single binary (and probably a  personal
+   tirc	 config-file,  easy setup on boxes where you have no
+   administrational access)
+ +o Comprehensive, well commented source code under BSD-style
+   license (freely distributable and usable)
+
+BBuuiillddiinngg
+
+     TIRC 0.47-alpha and higher is using a Gnu autoconf con-
+figure script for automated build-file adaptation.  To	cre-
+ate Makefile, config.h etc., and compile all features, issue
+
+    % ..//ccoonnffiigguurree ----wwiitthh--aallll
+
+in the source directory.  The  _-_-_h_e_l_p  parameter  shows	 you
+what options configure understands.
+
+The following configure options might be interesting:
+
+_-_-_e_n_a_b_l_e_-_d_e_b_u_g
+    builds  a  version	with  debug  code and debug info and
+
+
+TTIIRRCC SSoouurrccee DDiissttrriibbuuttiioonn			      RREEAADDMMEE
+
+
+
+
+
+
+
+
+
+
+extra warnings at compile time.
+
+_-_-_w_i_t_h_-_b_u_n_d_l_e_d_-_r_e_g_e_x
+    uses Henry Spencer's regular expression functions, which
+implement  POSIX-style extended regexps.  These will be used
+automatically  if  your	 system	  only	 has   the   ancient
+re_comp/re_exec	 functions.  But also when you only have the
+(also old) regcmp/regex functions, you	might  want  to	 use
+Spencer's  stuff,  since regcmp/regex are only basic regular
+expressions.  POSIX-style systems usually have a modern reg-
+comp/regexec  implementation.	Note: the regular expression
+routines in the linux runtime library are very slow and	 not
+entirely POSIX compatible.  Although TIRC doesn't make heavy
+use of regex, you might want to use the bundled regex lib if
+you  can  take the increased executable size.  This probably
+has been fixed in newer library releases.
+
+_-_-_w_i_t_h_-_g_n_u_-_r_e_g_e_x
+    This is for linking TIRC with the GNU regular expression
+functions which are mostly POSIX.  You can get the GNU regex
+lib from prep.ai.mit.edu or a mirror site and try with	that
+one.  Build the regex object file (regex.o) and copy regex.o
+and regex.h into the TIRC source  directory.   Then  specify
+--with-gnu-regex  with	configure and TIRC will link against
+regex.o.  You should only do this if  for  some	 reason	 the
+system	does not have proper regex functions and the bundled
+regex lib won't compile.
+
+_-_-_p_r_e_f_i_x_=_P_R_E_F_I_X
+    specifies where the installation will  take	 place;	 For
+example	 if  you want to install to /usr/contrib (instead of
+/usr/local,  which   is	  the	default),   specify   --pre-
+fix=/usr/contrib  and  the  TIRC  executable  will  land  in
+/usr/contrib/bin whereas  the  manpage	will  be  stored  in
+/usr/contrib/man/man1.
+
+_-_-_w_i_t_h_-_a_n_s_i_-_c_o_l_o_u_r_s
+    ANSI  terminal  char cell colourization support (see the
+COLOUR command).
+
+_-_-_w_i_t_h_-_d_l_m_o_d
+    Allows runtime-loading, binding and unloading of  shared
+libraries  through the /dlmod command.	Not supported on all
+platforms.
+
+_-_-_w_i_t_h_-_l_i_n_u_x_-_g_l_i_b_c On Gnu/Linux systems	 that  use  the	 new
+generic	 gnu  libc library instead of the traditional linux-
+specific gnu libc5, the System V IPC header files  sys/ipc.h
+and sys/shm.h may be broken.  Specifying this option enables
+a workaround.
+
+_-_-_w_i_t_h_-_a_l_l
+    Currently  equivalent  to  --with-ansi-colours   --with-
+
+
+TTIIRRCC SSoouurrccee DDiissttrriibbuuttiioonn			      RREEAADDMMEE
+
+
+
+
+
+
+
+
+
+
+dlmod.
+
+There're  other	 switches which are explained in configure's
+help output.
+
+     If configure succeeded in throwing together a  Makefile
+and config.h (if not, tell me), issue
+
+    % mmaakkee ddeeppeenndd
+
+to create the dependencies.
+If your mkdep does everything else but create nice dependen-
+cies, or if your system lacks mkdep, configure	will  decide
+to  use the bundled mkdep.sh script (which was borrowed from
+the 4.4BSD-Lite2 distribution).
+
+If you successfully updated the dependencies, try to compile
+the client:
+
+    % mmaakkee cclleeaann aallll
+    *crunch* *crunch* *crunch*
+    *plonk*
+    % _
+
+If that worked, you might have to get superuser (if you want
+to install system-wide) and type:
+
+    # mmaakkee iinnssttaallll
+
+which will copy the executable and the manual page to  their
+target	location.   If you're using the csh or tcsh and have
+added the tirc program	to  your  path,	 you  have  to	type
+"rehash" so that the shell finds the new binary.
+In  case  you  don't  have a BSD-compatible install utility,
+configure will use the bundled install-sh script, which	 was
+taken from X11R5.
+
+     TIRC     looks    for    a	   global    startup	file
+``/usr/local/share/tircrc''.  This file is not automatically
+generated by ``make install'' and isn't required for running
+the client.  However, it may be useful to provide all  users
+on the system with some default settings (which can be over-
+ridden by a .tircrc file in their home directories).
+
+Please read the manual page if you are new to TIRC.  You can
+get  help  on  commands and keybindings inside TIRC with the
+/help command.
+
+If you're upgrading from an earlier version of TIRC,  please
+have a look at the Changelog file to see what has changed.
+
+
+
+
+
+TTIIRRCC SSoouurrccee DDiissttrriibbuuttiioonn			      RREEAADDMMEE
+
+
+
+
+
+
+
+
+
+
+DDoonn''tt aasskk ffoorr tthheessee
+
+     Things  that  are	different from other irc clients but
+will never be implemented/changed (until you do it for your-
+self):
+
+ +o mIRC lameness like inline colour support
+ +o proprietary scripting language like in ircII
+ +o automatic  kicks,  protection and other automatisms which
+   influence other users
+ +o notify (it polls the server periodically - sucks)
+ +o xdcc (use ftp or normal dcc, irc isn't an interface to  a
+   warez repository)
+ +o CTCP USERINFO (stupid)
+ +o DCC TALK (use talk(1) instead)
+
+NNoonn--ttrriivviiaall mmooddiiffiiccaattiioonnss oonn tthhee TTIIRRCC ssoouurrccee
+
+     If	 you  want  to add your own stuff to TIRC, or change
+the source and redistribute your modifications, you're	wel-
+come to do so.	However, certain rules should be followed.
+
+First, please distinguish your version from the original (by
+changing the origin identifier to the global version  string
+in v.h).
+Second,	 make  it  clear  in the documentation material that
+yours is not the original version of TIRC.
+Third, never remove or change  any  copyrights	on  existing
+files.	 Don't	incorporate copyrighted source that does not
+allow free usage and distribution.
+Then, if you want, contact me to get the  RCS  tree  of	 the
+source (the source archive is actually not the entire source
+tree, it lacks the RCS files).
+
+     You're encouraged to check-in your versions as a  side-
+tree,  also  with  the possibility of later merging with the
+original tree.	If you don't do this but use your  own	kind
+of versioning (or seperate RCS/ SCCS tree), please leave the
+RCS stamps of the last original source version in the  files
+(probably  change  the $Id to something like $token or simi-
+lar).  This assures that other people can easily  track	 the
+source when they have the original RCS files.
+
+NOTE:  unfortunately  I	 lost  the rcs tree sometime back in
+1998; since the source ought to be retired sometime  anyways
+(going	to 2.0) I didn't want to setup another tree for this
+source.
+
+Of course you can always propose modifications	for  merging
+into the main source.
+
+
+
+
+
+TTIIRRCC SSoouurrccee DDiissttrriibbuuttiioonn			      RREEAADDMMEE
+
+
+
+
+
+
+
+
+
+
+AAcckknnoowwlleeddggeemmeennttss
+
+     Richard   C.   (rjc@rasi.demon.co.uk)  has	 contributed
+dynamically loadable  modules  support	using  the  system's
+dynamic link interface, and other ideas.
+
+Thanks	to Michal Listos for testing many alpha releases and
+reporting a lot of bugs at an  early  stage  of	 development
+(since 0.28-alpha or sth.).
+
+Vadim Kolontsov has contributed patches.
+
+Thanks	to  the other people who helped improving the client
+by proposing new functionality, notifying me about bug-fixes
+and simply testing the thing.
+
+The  work  of Henry Spencer (free posix regex library), Theo
+de Raadt (snprintf.c), the Free Software  Foundation  (auto-
+conf)	and   the   University	of  California	at  Berkeley
+(mkdep.sh, strtoul.c, regex) is highly appreciated.
+
+RReessoouurrcceess
+
+     You can get the latest version  of	 this  software	 via
+anonymous  ftp	from  the host ftp.mayn.de, in the directory
+/pub/unix/software/Network/Irc/tirc.  Log in with ``ftp'' as
+username and your complete e-mail address as password.
+
+     There's  a	 mailing  list for general discussion on the
+TIRC program.  It is quite low traffic and open to  everyone
+who's interested.
+To subscribe, send e-mail to tirc-subscribe@mayn.de, subject
+and body are irrelevant.  The list distribution	 address  is
+tirc@mayn.de.
+To  unsubscribe,  send mail to tirc-unsubscribe@mayn.de.  It
+is NOT allowed to send	commercial  advertisement  or  other
+spam (chain letters etc.) to the list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TTIIRRCC SSoouurrccee DDiissttrriibbuuttiioonn			      RREEAADDMMEE
+
+
+

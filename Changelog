@@ -1,0 +1,497 @@
+#	$Old: Changelog,v 1.118 1998/02/24 18:30:16 mkb Exp $
+
+1.1 -> 1.2 1999/03/12
+	o do not expect getsid to be around
+	o fixed a small printf-missing-arg bug
+	o faciliated build a little
+
+1.0 -> 1.1 1999/02/23
+	o do not suspend if no login shell underneath
+	o patches by Vadim Kolontsov included:
+	   * bind on specified interface (-h argument)
+	   * ctcp ping reports whether user or channel was msgd
+	   * "transparent" colour for use with xterm/rxvt
+	o fix for hash-compare induced command name ambiguity
+	o a couple of user invisible modifications have been done
+	  to a semi-critical region in hope to get rid of certain
+	  crashes;  however, without a proper crash analysis, I
+	  cannot say where the problem is exactly.  1.0 hasn't
+	  crashed on me so far but did so for others.
+	o the manual page has been extended by the new ircd 2.10
+	  channel mode descriptions.
+	o resizing on SIGWINCH didn't span all pages, fixed
+	o fixed a bug when /msg tab-history omitted last character
+	  of a 9-char dcc msg nickname
+
+0.54-alpha -> 1.0 1998/10/20
+	o note: an intermediate version (0.54pl2) has been around most
+	  of the time between 0.54 and 0.55, fixing two of the ugliest
+	  errors in 0.54 (as following)
+	o Fixed iw_addstr() which caused memory corruption under certain
+	  conditions
+	o Fixed two bugs in the editor line input (^K and p when line empty)
+	o Added televideo option (fucked up terminal support)
+	o SQUERY and SERVLIST have been added
+	o Fixed a bug in check_conf()
+	o Replaced some "9" with NICKSZ where use of the macro had slipped
+	  through; should now be better adjustable to servers with nicksize
+	  > 9 chars (when limit raised appropriately);
+	  ** Note before you flame me: this kind of stuff will all go away
+	     in tirc2; no static limits of any sort will be used there **
+	o Fixed a couple of minor stuff on the way
+	o The overly formal tircbug script has been removed from the
+	  distribution.  Send ordinary e-mail with a stack trace if possible
+	  to the mailing list.
+	o National character input (8 bit) has been fixed
+	o User idle time has been pushed up to 7 days
+	o The -d option didn't work anymore; fixed.
+	o Oops.. I deleted the RCS tree sometime back
+	o Thomas Koehler provided a workaround to compile TIRC on Linux/glibc
+	  systems with broken SysV-IPC headers
+	o Christian Bauer wanted to have ^N work as "next window"
+	o In pastemode, TAB is no longer treated specially; this fixes a
+	  rather large annoyance, when pasting something with tabs in it
+	o Control codes (except those for inline attributes) are stripped when
+	  adding a line to the window's buffer, this prevents that for example
+	  an embedded TAB messes up the screen a little
+	o A character between 128 and 160 (I can't remember which exactly)
+	  is on few terminals equivalent to ESC; it hadn't been stripped
+	  before because I didn't know of it, thus allowing an attacker to 
+	  issue control sequences to the user's terminal.  The linux console
+	  and some Amiga terminal emulator for example parse this control code,
+	  xterm doesn't.
+	  I haven't got the mail anymore from the person who noticed me of
+	  that, so I can't give credits either but at least it's fixed now.
+	o The hide-mirc-colours function (HIDEMCOL) should work as expected now.
+	o The xterm title is now updated (if enabled) also when quitting from
+	  the options editor (thus if you enable this option, it takes almost
+	  immediate effect).
+	o Check for vsnprintf, not for snprintf in configure (somehow didn't
+	  work on hp-ux)
+
+0.53-alpha -> 0.54-alpha 1998/02/18
+	o Reviewed buffer sizes to use memory more efficiently on certain
+	  malloc implementations
+	o Rewrote iw_addstr() completely; clearer code now and might also
+	  be a bit faster
+	o rxvt is recognized as xterm-compatible when setting window title
+	o Instead of unsafe sprintf/vsprintf, snprintf/vsnprintf together
+	  with dynamic buffer expansion are used in vulnerable places to
+	  prevent buffer overflows; on systems that do not have snprintf,
+	  a bundled version is used.
+	  This, together with the new iw_addstr() fixes a couple of
+	  prospective and/or real bugs, like the "/help keys" bug in the last
+	  version.
+	o Moving the focus sideways in the option editor's colour lines
+	  repainted the entire screen unnecessarily
+	o Condition 3. of the previous usage and dist-license has been
+	  removed
+	o /abort has been removed (sending sigquit, usually with Ctrl-\ has
+	  the same effect)
+	o Some small fixes, modifications and optimizations
+	o Fix: tty_getch() didn't check if characters read after Esc which
+	  were (together with the Esc) not matched as a function key were
+	  in fact a seperate function key string, typed before the Esc timeout
+	  occurred
+	o The editor line has been improved/fixed:
+	  + The cursor is moved after the last character if changing to end
+	    of line (C, c$, cw at end etc.) so that new characters get inserted
+	    after the last character when typing
+	  + X command didn't preserve line for undo, fixed
+	  + Added cut buffer and pasting of cutted/yanked text with p/P
+	    Text can be yanked with y/Y in the usual vi fashion
+	  + named marks (m<a-z> `<a-z> '<a-z>) have been added; ' is the same
+	    as ` here
+
+0.52-alpha -> 0.53-alpha 1998/02/12
+	o -lgen was missing from irix* LDFLAGS in configure.in, regcmp etc.
+	  were not detected
+	o Changed the tircbug utility so that it doesn't exit when it couldn't
+	  run tirc to query the version (like if the build didn't work) but
+	  queries the user to enter the relevant data
+	o Added setlocale() call at startup which should fix some odd 8-bit
+	  isprint() problems
+	o Nickname completion adds a space character and colon if appropriate
+	o Debugged the dynamic module code and made it work with the rest of
+	  the client
+	o DCC operations now check shared memory availability and cleanly
+	  abort the pending operation (instead of exiting the program
+	  in the generic chkmem()) if out of shared memory
+	o The file ``Reference'' has been removed from the distribution.
+	o Added nickname colourization based on approximate string matching
+	o Moved some header files includes into tirc.h
+	o Checks for presence of getrusage()
+	o Recognizes generic svr4 in configure (for SINIX)
+	o Enhanced security (checks length of server message etc.)
+	o Added /set numerics, which when enabled displays a server message's
+	  command numeric instead of "***", if it is tagged with one
+	o Some outputs were not paginated (for example /set) and scrolled
+	  past if the window was too small
+	o Added the options & colour dialog ('o' in editor line command mode)
+	o Minor fixes and modifications around the code
+	o Fixed a bug with unitialized list links when only one element was
+	  inserted in a tircrc-commands queue
+	o Fix: client didn't grasp that server truncated an illegal nickname
+	  (for example "foo.bar" to "foo")
+
+0.51-alpha -> 0.52-alpha 1998/01/15
+	o Merged in Rich's runtime-loadable module support
+	o ':' in command mode enters insert mode and inserts the cmdch
+	  at the beginning of the line
+	o Added command line paste mode (^P)
+	o The -d command line option didn't work anymore, fixed
+	o STATS replies are now shown with the responding server name
+	o ALIAS stuff doesn't show expansion when memorized and isn't
+	  logged (safer against logs and curious bystanders)
+	o Fixed small bug accessing previously freed block in iteration (in
+	  delnamefromcache)
+	o Regex storage now gets initialized with a dummy regex at startup
+	  to avoid segv on certain buggy linux libc implementations
+	o '`' (backtick) wasn't recognized as a valid nickname character
+	o Fixed invalid memory reference in cmd_nonum(), when flregister()ing
+	  a NICK message
+	o A bug in listcucache() that overran a buffer in iw_printf() has
+	  been fixed; this caused a hang on large /cnames output
+	o Screen init has been moved further down in the startup sequence
+	  again
+	o Added the tircbug utility for problem reports
+
+0.50.1-alpha -> 0.51-alpha 1997/12/12
+	o Fixed large memory leak in iw_addstr() which was introduced in
+	  0.50-alpha (should be practically leak-free again)
+	o Added recognition of channel mode 'q'
+	o Minor cleanups and modifications
+	o Rewrote the editor line updating; it tracks the user's cursor
+	  to provide enough context around what (s)he is typing
+	o The prompt update handling now uses a better strategy aswell
+	o The ``Porting'' file has been removed from the distribution
+	o Fixed non-working alternate Unix name query at startup (if
+	  config.guess couldn't determine a proper host type string)
+	o Added help text for PARSE (debugging)
+	o Fixed some wrong colourization
+
+0.50-alpha -> 0.50.1-alpha 1997/12/06
+	o Global rc file (/usr/local/share/tircrc)
+	o Cosmetics: error msgs after screen init are printed as window
+	  message, not to stderr
+	o Bugfix: tty_rputs() buffer overflow with inline attributes
+	o Bugfix: use of freed memory in iteration
+
+0.49-alpha -> 0.50-alpha 1997/12/01
+	o Bugfix in main.c, missing ',' causing K&R compiler to barf
+	o Added checking for sig_atomic_t to configure.in
+	o Added support for GNU regex (if no usable re functions and bundled
+	  regex fails)
+	o Fixed ellipsis syntax in some of the printf-style function
+	  definitions' K&R part
+	o Expanded macros using token concatenation (## or /**/) in source
+	  since on SunOS 4, the preprocessor handled neither correctly
+	o make lint works
+	o lint run; fixed some bugs in K&R parts; removed unused variables
+	  and some other glitches
+	o editor line now isn't reset anymore (and history deleted) when
+	  linking up to a server
+	o Removed several static buffers (instead using automatic storage
+	  or malloc); resized (smaller) some buffers (dcc buffer, screen
+	  output buffer)
+	o Added colour parsing and display
+	o Fixed anomaly in tty_rputs(), concerning line wrap (attribute
+	  control characters were not honored)
+	o Fixed bug in dcc.c, causing use of freed memory if error on
+	  control pipe caused entry to be removed
+	o Removed nofmt global variable and handling (one side effect less)
+	o Added UPTIME
+	o Changed automatic aggregate initialization to static storage
+	  class (since it is not supported by K&R)
+	o Changed constant MAP_ANON to MAP_ANONYMOUS in mmap call
+	o Tested on HP-UX 10.10 with bundled cc
+	o Rewrote major parts of iw_addstr()
+	o Removed some limits on statically allocated display format buffers,
+	  (made them dynamically allocated), tested with 2000x1800 characters
+	  terminal size (xterm)
+	o Added '~' vi command (toggle case) to editor line
+	o Bugfix: /query user wrongly said "No query in this window" (depended
+	  on uninitialized data)
+	o Slightly new face
+	o Added bundled strtoul for systems where it does not exist
+	o Bugfix: readrc() was executed before screeninit(), accessing
+	  unitialized data on iw_printf()
+	o Added immediate rc-commands and the "immediate" prefix
+	o Added FAQ list
+	o Cleaned irc layer initialization, removed small memory leak
+	o Added aging of unaccepted DCC incoming requests
+	o Added user selectable colour set (COLOUR command)
+	o Bugfix: if $USER was not set but $HOME, it referenced invalid
+	  memory
+	o Added possibility of dumping backscroll to log when opening
+	  logfile for window logging
+	o Attribute control characters get stripped from log output
+	o Fixed bug in dcc.c which sent "...request has been rejected" on
+	  close even though it was us who initiated the request
+
+0.48.1-alpha -> 0.49-alpha 1997/10/26
+	o Refined checking behaviour of new mail check
+	o Small error-print bug fixed in oodcmd()
+	o Added quoting of cmdch ('/' by default) through // or /<space>
+	o Bugfix shm.c: sysvipc segsize was initialized to 0 and remained 0
+	o Bugfix cmd.c: $* expansion hung if no arguments were provided
+	o Local in-address in dcc.c is now the same as used for the irc
+	  connection, instead of trying to find one with the
+	  gethostname/gethostbyname combination (this also works on systems
+	  where gethostbyname() is lying)
+	o ^_ (underscore) wasn't converted to digraph if attribs off
+	o exptilde gets own home directory from $HOME if $USER is unset or
+	  getpwnam() doesn't work as expected
+	o Changed outfit a bit
+	o Implemented DCC RESUME
+	
+0.48-alpha -> 0.48.1-alpha 1997/10/18
+	o Fixed bug in done_urlfn()
+	o Added URL to manpage
+
+0.47.1-alpha -> 0.48-alpha 1997/10/18
+	o help.h: ctcphelp wrongly said CTCP OOD instead of CTCP OP
+	o manpage didn't mention Ctrl+X-O
+	o moved basename()
+	o Added the vi 'r' command to editor line
+	o Notices to users on &channels (like &KILLS etc.) now get displayed
+	  in the appropriate channel window
+	o Fixed bug in irc_chrcmp() and some glitch in complete_from_ucache()
+	  causing spurious sigsegvs
+	o Replaced calls to strdup() with Strdup() since some systems don't
+	  have strdup()
+	o Next/previous page commands rotate now
+	o SunOS 5 wasn't properly detected by configure and thus -lnsl and
+	  -lsocket weren't added to the LDFLAGS
+	o Added some more tests to configure.in
+	o Wrote shared memory allocator
+	o /dcc list now prints the peer in-address and how much data has
+	  been transmitted (this uses the shared memory mechanism)
+	o tty: added support for sgtty, tiocgsize
+	o Ctrl+A, Ctrl+E behave now more like in real emacs
+	o Fixed pagination bug in iw_addstr()
+	o Tilde expansion is now done on all pathnames entered by the user
+	  (dcc, logfiles)
+	o '-' wasn't recognized as being a nickname character
+	o Added wildcard support to op-on-demand uhost matching
+	o Fixed a bug in ircx.c where iw_printf() was called wrongly
+	o Added the URL catching mechanism
+	o Bugfix: page update check indicator was nullified on screen refresh
+
+0.47-alpha -> 0.47.1-alpha 1997/10/09
+	o configure.in bugfix; ac_cv_prog_gcc was used before being defined
+	o VOIDPTR macro, added test for void * in configure.in
+	o Renamed TIRC internal function closelog() to ch_closelog() since
+	  it collides with the syslog closelog() function
+	o Made functions with variable number of arguments work with both
+	  traditional and standard C
+	o ctime() string contains a newline, this messed up the timestamp
+	  display
+
+0.46-alpha -> 0.47-alpha 1997/10/08
+	o Linted
+	o Bugfix: undernet, dalnet and even new efnet servers with a certain
+	  patch send some server notices without a message prefix which tirc
+	  couldn't deal with (eh, they should fix their lame server rather)
+	o '^' and '_' were not recognized as nick characters in isnickch()
+	o Added ChanOp-On-Demand facility (/OOD, /CTCP OP, /SET OOD)
+	o Only first word in a ctcp privmsg gets converted to uppercase now
+	o Minor cosmetics
+	o '_' is now recognized as part of an alphanum word like in vi
+	o Ctrl+T / Ctrl+X-O switch to previous window
+	o $* in alias expansion denotes all arguments
+	o Changed terminal attribute setting a bit; added tty_addbuff()
+	  which adds a string to the output buffer without affecting the
+	  cursor calculation
+	o Added inline attributes like ^B == bold etc., converted source
+	  to use them; when CONFIG_ATTRIBS is enabled, ircII character
+	  attributes are not filtered out, resulting in the appropriate
+	  terminal character attributes
+	o Simplified v.h version string since NextStep cc (gcc 2.2.2)
+	  choked on the composite defines
+	o Changed channel mode display "+nt" to "+tn" because "nt" looks
+	  a bit unpleasant to some of us
+	o Server messages "End of blahblah" are not suppressed anymore
+	  (although this is a compile time option)
+	o Added 3rd alternative of hardcoded pgup/pgdn sequences, for use
+	  with dec keyboard / xterm, DEC find key invokes search backwards
+	o The NICKORPREFIX macro in irc.c uses the nickname if it's a valid
+	  one or the server message prefix if the message doesn't originate
+	  from an irc user
+	o Notice to channels gets marked as such
+	o Added /PARSE, to help in debugging server message handling
+	o Using a Gnu Autoconf configure script for creating Makefile and
+	  adapting source to the system environment; changed source to use
+	  the results from configure
+	o Bundled Henry Spencer's regular expression functions and provided
+	  the possibility of using them
+	o Added Spencer's and the University of California's copyright
+	  statements to the COPYRIGHT file, since we bundle stuff from them
+	o Converted everything to pre-STDC-like style (except some things
+	  like enum, etc.) for better compatibility with older Unix systems
+
+0.45-alpha -> 0.46-alpha 1997/09/11
+	o Fixed error in help text
+	o Handling of non-EOF server connection errors in doirc()
+	o Bugfix: channelname was appended if privmsg arrived at topchannel
+	  but in other page
+	o Bugfix: empty lines got stored in editor line history
+	o Bugfix: lastnick() was a bit inaccurate
+	o More-prompts now scroll a whole page, not just one line
+	o Bugfix in update_eline (signed interpretation of characters)
+	o Bugfix: tab-reply to last privmsg was not cmdch-aware
+	o Modified terminal scrolling with delete-line/insert-line
+	  method, obviously didn't work properly before
+	o Changed: DCC connection don't get closed automatically when
+	  closing server connection
+	o Ported to IRIX (5.3)
+	o Changed to include <term.h> when configured with BSDCURSES,
+	  since that file contains valid prototypes for tputs and tparm
+	o dcc.c: changed some oddities with error handling in parent process
+	o Bugfix: SIGWINCH only affected the first page
+	o Removed small memory leak in backscroll regex matching
+	o Fixed security botch with /tmp/lastlog (superuser could read
+	  messages) by unlinking directly after opening
+	o Fixed tty error handling in tstp handler
+	o NICK/QUIT messages now favour the current page
+	o Timestamps now contain date+time, as defined for the current
+	  locale
+	o User idle limit excession (client side) says so when exiting the
+	  client
+	o Changed quit behaviour (waits for server connection close)
+	o If enabled, the status line shows a list of pages that have
+	  received traffic since last visit
+	o Added message logging, independent of lastlog
+	o Added regular file checking in logging functions
+	o Made movement in editor line more vi-like, revamped word movements
+
+0.44-alpha -> 0.45-alpha 1997/08/12
+	o The command line parser now accepts multiple commands, seperated
+	  by a semicolon (`;') and quoted by "", except for message commands,
+	  topic etc.
+	o Implemented ALIAS
+	o Added patchlevel indicator for beta releases in v.h
+	o Fixed major memory leaks in regaddln() and iw_addstr().
+	  According to the third degree atom tool, this dropped leakage
+	  in an extensive testing session from 1.2MB to 500 bytes.
+	o added free_history() to get rid of a fake memory leak at program
+	  exit
+	o added SAY, mainly for use in aliases
+	o removed previously marked possible buffer overflow in screen.c
+	  (strcat -> strncat)
+	o Added emacs-like ^X semantics:
+	  ^X-o switches to other window (like [ESC-]^W)
+	  ^X-2 creates new window (/WIN NEW)
+	  ^X-0 deletes current window (/WIN DEL)
+	  And later ^X shortcuts for /PAGE handling
+	o Added /LOG (channel logging)
+	o Fixed clobbering of typed filename in logging functions if user
+	  is asked for overwriting (same buffer), fixed sigsegv bug related
+	  to this
+	o All channels are now deleted when quitting irc, this ensures that
+	  channel logfiles are closed and gets rid off a fake memory leak
+	o Fixed small bug in iw_addstr() which caused lines to be wrapped
+	  a bit too early
+	o Bugfix: editor line messed up when typing if channel name in prompt
+	  was truncated (longer than 20 chars)
+	o Adapted to OpenBSD (2.1)
+	o /SYSTEM -MSG routing output to target on irc
+	o Fixed some /SYSTEM synchronization stuff
+	o (xterm-)Window resizing (reformatting backscroll buffers according
+	  to the new window width) is now fully operational 
+	o Added nickname completion
+	o Fixed bug creating stupid banmask in buildban()
+	o Added /PAGE multiple irc pages
+	o Revised nickchange oddities
+	o Linted
+	o Checked for memory leaks
+	o Added xterm title change
+	o Updated manpage
+
+0.43-alpha -> 0.44-alpha 1997/07/09
+	o Spooling outgoing dcc chat messages if writing to DCC socket
+	  would block, this solves occasional blocking of the master
+	  client if the remote side closed connection
+	o Makefile changes: ``make third'' for ``third degree atom tool''
+	  (memory leak & sanity checking on DEC Unix)
+	o Implemented /query
+	o ^W now only switches windows when in command mode.  This is
+	  necessary since ^W is vi word-erase backward in input mode.
+	o Fixed bug which kept dcc chat slaves running in busy loop
+	o Fixed message/dcc chat history mechanism
+
+0.42-alpha -> 0.43-alpha 1997/06/24
+	o SIGPIPE is now ignored
+	o Added handling for ERR_NICKCOLLISION and ERR_ERRONEUSNICKNAME
+	o Implemented DCC CHAT functionality
+	o DCC child processes usually don't exit on themselves anymore
+	  but pause for the parent to kill them
+	o DCC child processes terminate immediately if IPC to parent is
+	  dysfunctional
+	o buildban respects domain names with only a single dot and doesn't
+	  try to ignore the entire toplevel-domain
+
+0.41-alpha -> 0.42-alpha 1997/06/09
+	o biff functionality (checks mailbox every minute) if enabled
+	o DCC (direct client connection) file transfer is operational
+	o Moved actual away/here toggling from cmd.c (user toggled) to
+	  irc.c (server-reply toggled)
+
+0.40-alpha -> 0.41-alpha 1997/05/22
+	o Fixed silly thing in /nick (user couldn't change nickname
+	  while not connected)
+	o Fixed some non-critical bugs in update_cucache()
+	o Backscroll buffers are now searchable with regular expressions
+	  similar to vi(1)
+
+0.39-alpha -> 0.40-alpha 1997/05/20:
+	o Cleaned buffer-overrun on possible overlong user input
+	  in getfromucache() 
+	o Added ',' as a terminator for nicks for /op
+	o Added clname support in the USER registration (though most
+	  servers ignore this)
+	o Cursor update behaves a bit differently (doesn't stick to the
+	  editor line if it doesn't have to)
+	o Wrote a manpage
+	o Fixed a bug in 437 reaction (couldn't tell channel from nick)
+	o Optimized editor line update to work better over slow network
+	  connections or prehistoric terminals
+	o ^U in insert/overwrite mode now deletes from cursor to start
+	  of line, not the whole line as before
+
+0.38-alpha -> 0.39-alpha 1997/05/14:
+	o Fixed a bug in iw_addchan() which prevented deletion of
+	  free()d channels from the channel list in certain situations,
+	  corrupting the heap
+	o Lint session, cleaned some minor glitches
+	o Added keybindings quick overview help
+
+0.37-alpha -> 0.38-alpha 1997/05/12:
+	o Fixed a serious bug in getfromucache() which caused an
+	  infinite loop if a nickchange resulted in the same nick
+	  (character case change)
+	o Minor cosmetics
+
+0.36-alpha -> 0.37-alpha 1997/05/09:
+	o Reacting on 437 if nick (ircd 2.9, nick/channel delay)
+	o Fixed a bug concerning channel user cache and channel
+	  deletion, added delchan()
+	o Fixed display code reentrance in display_clock(),
+	  which possibly caused occasional hangs
+	o Added in-line buffer to prevent ping-timeout during
+	  more prompts and in askpass()
+
+0.35-alpha -> 0.36-alpha (inital change log) 1997/05/07:
+	o TAB-reply history
+	o ircd2.9-JOIN with modes (^G seperator) bug fixed
+	o /umode command
+	o /ign command
+	o /desc command
+	o /msg to channel displays like implicit privmsg to channel
+	o CTCP TIME reply
+	o USERHOST (/uhost) updates the channel-user cache
+	o /kb (/lart) and /ign are automatically retried if the
+	  source address was not cached and has been queried with
+	  an implicit USERHOST
+	o RCS repository reset, starting all file versions with 1.1
+

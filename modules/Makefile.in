@@ -1,0 +1,44 @@
+#	$Id: Makefile.in,v 1.1 1998/02/24 00:32:14 token Exp $
+
+VPATH	=hello
+
+DLCFLAGS=@DLCFLAGS@
+DLLDFLAGS=@DLLDFLAGS@
+
+CC      =@CC@
+INCLUDES=-I../..
+CPPFLAGS=$(INCLUDES) @CPPFLAGS@ @REFLAGS@
+CPP     =@CPP@ $(CPPFLAGS)
+LINT    =@LINT@
+CXREF   =@CXREF@
+OPTFLAG =@OPTFLAG@
+CFLAGS  =$(OPTFLAG) $(INCLUDES) @CFLAGS@
+LDFLAGS =@DLLDFLAGS@ @LDFLAGS@ @LIBS@
+LINTFLAGS=$(CPPFLAGS) @LINTFLAGS@
+CXFLAGS =@CXFLAGS@ $(CPPFLAGS)
+prefix  =@prefix@
+exec_prefix=@exec_prefix@
+bindir  =@bindir@
+datadir =@datadir@
+mandir  =@mandir@
+INSTALL =@INSTALL@
+MKDEP   =@MKDEP@
+DINST   =$(INSTALL) -m644
+
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+.SUFFIXES: .ln .c
+.c.ln:
+		$(LINT) $(LINTFLAGS) -c $<
+
+all:	hello.so
+
+distclean: clean
+
+clean:
+	cd hello; $(MAKE) clean
+
+hello.so:
+	cd hello; $(MAKE)
+

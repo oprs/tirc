@@ -1,0 +1,95 @@
+#	$Id: Makefile.in,v 1.42 1998/02/24 18:30:16 mkb Exp $
+
+# Run the configure script to generate a Makefile.
+
+CC	=@CC@
+INCLUDES=-I. @REINCLUDE@
+CPPFLAGS=$(INCLUDES) @CPPFLAGS@ @REFLAGS@
+CPP	=@CPP@ $(CPPFLAGS)
+LINT	=@LINT@
+CXREF	=@CXREF@
+OPTFLAG	=@OPTFLAG@
+CFLAGS	=$(OPTFLAG) @CFLAGS@
+LDFLAGS	=@LDFLAGS@ @LIBS@
+LINTFLAGS=$(CPPFLAGS) @LINTFLAGS@ 
+CXFLAGS	=@CXFLAGS@ $(CPPFLAGS)
+prefix	=@prefix@
+exec_prefix=@exec_prefix@
+bindir	=@bindir@
+datadir	=@datadir@
+mandir	=@mandir@
+INSTALL	=@INSTALL@
+MKDEP	=@MKDEP@
+BINST	=$(INSTALL) -m755
+MINST	=$(INSTALL) -m644
+
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+.SUFFIXES: .ln .c
+.c.ln:
+	$(LINT) $(LINTFLAGS) -c $<
+
+CTAGS	=ctags -w
+# Note: REOBJ must not stand alone on a line
+OBJ	=main.o irc.o ircx.o input.o cmd.o screen.o tty.o flood.o system.o\
+	dcc.o shm.o compat.o url.o colour.o strtoul.o ncol.o dl.o dlapi.o\
+	hook.o odlg.o snprintf.o @REOBJ@
+LOBJ	=main.ln irc.ln ircx.ln input.ln cmd.ln screen.ln tty.ln flood.ln\
+	system.ln dcc.ln shm.ln compat.ln url.ln colour.ln strtoul.ln ncol.ln\
+	dl.ln dlapi.ln hook.ln odlg.ln
+
+all:	depend tirc tags
+
+clean:	
+	rm -f core *.core core.* *third* *.3log tirc *.o *.u *.ln *.html cxref.* mprof.*
+
+distclean: clean
+	rm -f config.cache config.status config.log config.h Makefile conftest* ht.h regex.h tags
+
+install: tirc tirc.1
+	$(BINST) tirc $(bindir)
+#	$(BINST) tircbug $(bindir)
+	$(MINST) tirc.1 $(mandir)/man1
+#	rm -f $(mandir)/man1/tircbug.1
+#	ln -s $(mandir)/man1/tirc.1 $(mandir)/man1/tircbug.1
+
+tags:	*.c *.h
+	$(CTAGS) *.c *.h
+
+cxref:	*.c *.h
+	$(CXREF) *.c $(CXFLAGS)
+
+rcs:
+	ci -u Makefile.in configure.in rfcnum.awk FAQ \
+	dot.tircrc Notes Changelog tirc.1 Ported mkdist \
+	cmd.c dcc.c flood.c input.c irc.c ircx.c main.c screen.c shm.c \
+	system.c tty.c compat.c url.c colour.c strtoul.c ncol.c dl.c dl.h \
+	acconfig.h compat.h help.h num.h tirc.h tty.h v.h urlchtml.h \
+	colour.h hook.c hook.h odlg.c snprintf.c dlapi.c dlapi.h
+
+depend:
+	$(MKDEP) $(INCLUDES) *.c
+
+tirc:	$(OBJ)
+	$(CC) $(OBJ) $(LDFLAGS) -o tirc
+
+lint:
+	sed '/### Do not/,$$s/\.o/.ln/' < Makefile > Makefile.ln
+	make -f Makefile.ln reallint
+	rm -f Makefile.ln
+
+reallint:	$(LOBJ)
+	$(LINT) $(LOBJ) $(LDFLAGS)
+
+tirc.third: tirc
+	atom tirc -tool third -o tirc.third
+
+regcomp.o:	regex/regcomp.c
+regerror.o:	regex/regerror.c
+regexec.o:	regex/regexec.c
+regfree.o:	regex/regfree.c
+regcomp.ln:	regex/regcomp.c
+regerror.ln:	regex/regerror.c
+regexec.ln:	regex/regexec.c
+regfree.ln:	regex/regfree.c

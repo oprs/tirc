@@ -1,0 +1,712 @@
+.\"	$Id: tirc.1,v 1.36 1998/02/22 19:04:49 mkb Exp $
+.\"	Copyright (c) 1996, 1997 Matthias Buelow.  All rights reserved.
+.TH TIRC 1 "Feb 23th, 1999" "Contributed Software"
+.SH NAME
+tirc \- Internet Relay Chat client
+.SH SYNOPSIS
+.B tirc
+[
+.BI \-n \ nickname
+] [
+.BI \-s \ server
+] [
+.BI \-p \ port
+] [
+.BI \-x \ password
+] [
+.BI \-h \ hostname
+] [
+.BI \-d
+] [
+.BI \-v
+]
+.br
+.SH DESCRIPTION
+.B TIRC
+is a client program for the Internet Relay Chat.  It provides
+all general functionality to participate in the global IRC networks.
+TIRC is ircd 2.9/2.10 compatible and has extensions like CTCP (client-to-client
+protocol), DCC (direct client connection) for transferring files and private
+chat, easy to use multi-region support with searchable backscroll, logfiles and 
+message filtering.
+TIRC is termcap based and should run with any reasonable terminal (and also
+on some pathetic ones).  It does
+.B not
+provide an extension scripting 
+language since this is more often abused for robots and warscripts
+and it is not really needed with TIRC since the client is already quite luser-
+friendly.  Please help keeping the IRC network bot- and script-free.
+.br
+.SH INVOKING TIRC
+TIRC can be invoked without arguments when you specified the required
+parameters in the local TIRC runcom file or you can give server name etc.
+explicitly on invocation which then overrides the respective config file
+entries.  Look below for an explanation on the config file syntax.
+.LP
+TIRC will terminate immediately if you are the superuser, have an 
+invalid TERM or TERMCAP selection, are not on a tty  or if you have parse
+errors in an existing config file.  You also require a sane GECOS field
+in your password entry, since we want to know your real name.
+TIRC does not need a config file.  All you really need to fully use TIRC
+is the binary program.  However, the use of a personal config file is
+advised.
+.LP
+When TIRC is started, it attempts to connect to the specified server on
+the specified tcp-port number.  If the connection is established, TIRC
+will send the client registration to the remote IRC server.  If you
+specified a password, this will be used for registration.  You require
+this if your I:-line is password protected.  Specifying the debug option
+(-d) sets the debug dump flag on the main window which allows you to look
+at the raw client-server communication right from the start (you can later
+toggle this for any window with the WIN MODE command).
+.br
+The -h option specifies a hostname; tirc will try to bind on that interface
+so that you use IRC with the specified hostname.
+.LP
+In case the client can not connect to the server for any reason, you can
+try a different server with the SERVER command.
+.LP
+If you're done with chatting, you can exit the client with the QUIT
+command.  TIRC will not reconnect automatically if you got forcibly
+disconnected by ircd due to connection trouble or operator kills.
+.br
+.SH SCREEN LAYOUT
+The TIRC screen generally consists of regions, also called windows (not to be 
+confused with X11 windows), which may contain channels or catch several
+message types.  TIRC can manage multiple pages, where each page presents
+itself as a seperate screen.
+.LP
+At the bottom of each window, there is a status bar, which shows you whether
+the window is focussed, what top channel it contains (the one privmsgs get
+sent to if you type into the window), your nickname, user and channel modes
+(the user modes are following the nickname, the channel modes are following
+the channel name), the network-internal name of the IRC server you are
+currently connected to, the current page number and optionally the page
+numbers that have traffic since last visit. 
+On the far right of the status line, the window modes are shown.  If you
+enabled this feature, a clock is shown on the focussed status line.
+If you have set away, the status line displays "away" instead of the
+user modes.
+.LP
+At the bottom of the screen is the editor line where you enter text and
+commands.  The input line mainly supports vi(1)-like keybindings with
+some additional emacs(1)-style keys.
+You can move the focus between window regions with Ctrl+W/Ctrl+T.  For a more
+complete listing on keybindings, please refer to the KEYBINDINGS section
+and to HELP KEYS in the help function.
+.LP
+If your screen gets messed up somehow, pressing Ctrl+L or Ctrl+R usually
+puts it back into a sane state.  Note that this will delete non-logged
+lines (such as help text) from your windows and only redisplay what's in
+the backscroll (usually the important stuff).  Thus you can also use
+Ctrl+L to get rid of help texts and redisplay a window that has been
+CLEARed.
+.LP
+The editor line prompt usually displays the channel name if
+the window contains a top channel followed by a '>'.  The prompt is
+changed if you have to enter a different nickname or a password.  If
+instead of the prompt there is a "+MORE...+", this tells you that current
+text output didn't fit on one window page and you can go on by pressing
+any key or 'q' to abort displaying more.
+.br
+.SH WINDOW MOTION
+TIRC's windowy regions contain a backscroll which is by default 1200
+lines for each window.  You can use Ctrl+B to scroll backward (to earlier
+text) in the backscroll and Ctrl+F to scroll forward.  Ctrl+G goes to the
+bottom of the backscroll (i.e. the current text).  If you have scrolled back,
+no new lines will be displayed and a "[+]" mark appears on the status
+line to inform you that you are somewhere else in the buffer.
+.LP
+You can add new windows and resize them.  You can move channels between
+windows by JOINing them in a different window.  The channel will then
+be deleted from the old window and added to the new window as the top
+channel.  By this method, you can also put a channel to the top in the same
+window.  Window management is done with the /WIN command and key shortcuts.
+.br
+.SH PAGE MANAGEMENT
+TIRC can manage multiple pages in a fashion rudimentarily similar to the
+screen(1) tool.  You can have up to 10 pages, each containing several
+windows.  Pages are created and deleted with the /PAGE command and the
+Ctrl+X shortcuts.
+.br
+.SH WINDOW SYSTEM SUPPORT
+TIRC doesn't have provisions to make special use of windowing systems, like
+the X Window System.  On X11, TIRC is being run from an xterm or similar
+program.  However, TIRC can set the xterm title to something useful and it
+responds to window resizing in a sensible way by reformatting the backscroll
+lines.  The latter is not limited to X11.
+.br
+.SH GENERAL USAGE
+I assume that you're already familiar with IRC and other IRC clients in
+general and I will not go into explanations about the IRC network and
+habits on IRC.  If you are new to IRC, please refer to the IRC introduction
+that comes with the ircII client.
+.LP
+If you are already familiar with ircII, you won't have many problems using
+TIRC.  In fact you might see that many TIRC features do the same as their
+ircII counterparts yet in a more consistent way.  TIRC doesn't have a
+scripting language.  It is the author's belief that scripting languages
+do more harm by abuse than they're useful.  Many comfortable functions
+are hardcoded into TIRC so that a script isn't really required.
+.LP
+With TIRC you can communicate with users in the following ways:
+.LP
+By typing the text you want to say directly into the editor line, the text
+will be sent to the top channel of that window.  If there isn't any channel
+in the window, an error will be displayed.  Empty lines are not sent to the
+server.  This also works for windows which have a query ``channel'' on top,
+where the text is being send as privmsg to the respective user.
+.LP
+You can use /MSG (or /M, which is even shorter) to write to channels which
+are not the top channel and to write privmsgs to other users.
+.LP
+You can establish a DCC CHAT connection, which provides you with a means of
+communicating directly with the other user's client (data does not go through
+the IRC network). DCC can also be used to transfer files between clients for
+situations where ftp might be unappropriate.
+.LP
+TIRC commands are entered like text but they must stand alone on a line (not
+preceded or followed by other text) and they're introduced with the command
+character.  By default this is '/'.  Although commands are case-insensitive,
+they're displayed in the documentation and the client itself as uppercase.
+For example, if you want to join the channel #foobar, you will type the
+command "/join #foobar" and press return.  To get an overview on the
+available commands, read the section COMMANDS in this manual page and use
+the HELP command.
+.LP
+TIRC doesn't have a restrictive novice mode like ircII.  This is probably
+because it isn't meant to be used by lusers.
+.LP
+If the user is keyboard-idle (no input) for a certain time (default is
+48 hours), the client will exit with ``User idle limit exceeded''.  This
+is to prevent forgotten clients running for very long times.  The limit
+is compiled into and cannot be changed at runtime (see tirc.h if you really
+want to change it).
+.br
+.SH GETTING HELP
+The HELP command gives you a list available of help topics.
+To get help on a certain topic, you will say "/HELP topic".
+Please read the help and the manpage carefully.  It is advised to
+have a look at all the help topics if you're new to TIRC.  Some
+commands differ from what commands with the same name do in ircII, so
+reading the help might save you from some trouble.
+.br
+.SH INITIALIZATION
+On startup, TIRC attempts to read the runcom file .tircrc in your home 
+directory.
+If there are no syntax errors in it, TIRC configures itself according to
+the entries in that file.  The format is generally free ASCII text.
+Comments are introduced with the hash ('#') character and run to the end of
+the line.  If you want to use the hash character in the file (like in a
+channel name), you have to escape it with a backslash ('\\').  So the channel
+name #foobar will be written as \\#foobar in .tircrc.  Empty lines are allowed.
+.LP
+The rc-file entries consist of either variable assignments in the style
+of variable = value and of commands.
+Commands in .tircrc are parsed as if they were typed into the editor line in
+the order as they appear in the rc-file.
+If the prefix ``immediate'' precedes a command, the command will be executed
+right at start.  Execution of other commands will be delayed until the client
+has successfully registered with the server.
+.LP
+The following variables can be assigned values:
+.TP
+.I server
+The domain name or numerical IP address of the default server
+you want to connect to.
+.TP
+.I nick
+The nickname you want to use on IRC.  You can change this later
+with the NICK command.  If the nickname already exists if you register, TIRC
+will prompt you for a different one.
+.TP
+.I port
+The TCP port the server listens on.
+.TP
+.I pass
+If your connection requires an I:-line password, you can specify
+it here.
+.TP
+.I clname
+Alternate domain name of your machine running the client.  This will
+be given to the server as the second argument on USER when registering.
+Most IRC servers ignore this, though.
+.TP
+.I realname
+Specify here the real name that should appear on WHO, WHOIS
+and similar commands.  If this isn't specified, TIRC uses the name that
+appears in the GECOS field of your password entry.  It is good habit to
+actually use your own name.
+.LP
+TIRC comes with an example dot.tircrc file which you can copy as .tircrc
+into your home directory and then modify according to your requirements.
+.br
+.SH COMMANDS
+This is a short overview of TIRC's commands.  For a more thorough explanation
+refer to the help function.
+.TP
+.I ABORT
+Terminates TIRC with SIGABRT.
+.TP
+.I ADMIN [<server>]
+Server administrative contact.
+.TP
+.I AWAY [<away message>]
+Marks the user as being away.
+.TP
+.I BYE [<comment>]
+Quit TIRC (also QUIT, EXIT, SIGNOFF).
+.TP
+.I CLEAR
+Clear the window.
+.TP
+.I CLIST
+Display channel list.
+.TP
+.I CLOSE [<comment>]
+Close connection without exiting.
+.TP
+.I CMDCH <character>
+Changes command character.
+.TP
+.I CNAMES
+Print out channel user cache.
+.TP
+.I COLOUR
+Set colour values for colourization type.
+.TP
+.I CONNECT
+Connect two servers.
+.TP
+.I CTCP <target> <ctcpcommand>
+Send a privmsg in CTCP style format.
+.TP
+.I DATE [<server>]
+Get time+date (also TIME).
+.TP
+.I DCC <function>
+Control direct client connections.
+.TP
+.I DEOP <nickname>[ <nickname> ...]
+Take chanop.
+.TP
+.I DESC <target> <description>
+Send a CTCP ACTION privmsg to target.
+.TP
+.I DIE
+Terminate server.
+.TP
+.I IGN <nickname>
+Ignores the user.
+.TP
+.I IGNORE <function> {<spec>|<identifier>}
+Manage the ignore list.
+.TP
+.I INFO <server>
+Display IRC info.
+.TP
+.I INVITE <nickname> <channel>
+Inivites the user to channel.
+.TP
+.I ISON <nickname>[ <nickname> ...]
+Check if nicks are online.
+.TP
+.I JOIN <channelname> [<key>]
+Join channel in current window.
+.TP
+.I KB <nickname> [<comment>]
+Ban+kick+[ignore] user.  LART is almost the same.
+.TP
+.I KEYS
+Display keybindings.
+.TP
+.I KICK <channel> <user> [<comment>]
+Kick user from channel.
+.TP
+.I KILL <user> <comment>
+Remove user from IRC.
+.TP
+.I LAME <percentage>
+The famous lame-o-metre.
+.TP
+.I LART <nickname> [<comment>]
+Ban+kick+[ignore] user.  Almost the same as KB.
+.TP
+.I LASTLOG [<num>]
+Display logged private messages.
+.TP
+.I LEAVE <channel> [<comment>]
+Leave channel.  PART is the same.
+.TP
+.I LINKS [[<remote server>] <server mask>]
+Display matching server links.
+.TP
+.I LIST [<channel>[,<channel>] [<server>]]
+List channels.
+.TP
+.I LOG {MSG|[<channel>]} [<logfile>]
+Log channel traffic or messages to logfile.
+.TP
+.I LUSERS [<wildcard> [<server>]]
+List users.
+.TP
+.I M <target> <text>
+Short for MSG.
+.TP
+.I MSG <target> <text>
+Send privmsg to target.
+.TP
+.I MODE {<channel>|<nick>} {+|-}<modechars> [<parameters>]
+Changes and displays user or channel mode.
+.TP
+.I MOTD {<server>|<nickname>}
+Display server message-of-the-day.
+.TP
+.I N [<channel>[,<channel>]]
+Short for NAMES.
+.TP
+.I NAMES [<channel>[,<channel>]]
+Show nicknames on channels.  Same as N.
+.TP
+.I NCOL [<function>] [<nick>|<id>] [<degree>] [<fg-colour>]
+Sets the automatic colourization of nicknames with approximate string matching.
+.TP
+.I NICK <nickname>
+Change nickname.
+.TP
+.I NOTICE <target> <text>
+Send notice to target.
+.TP
+.I OOD [<command> {<id>|<oline>}]
+Show, ADD or DEL ChanOp-On-Demand lines. 
+.TP
+.I OP <nickname>[ <nickname> ...]
+Give chanop.
+.TP
+.I OPER [<nickname>] [<password>]
+Gain IRC operator privileges.
+.TP
+.I PAGE {<command>|<number>}
+Manage TIRC pages.
+.TP
+.I PART <channel> [<comment>]
+Leave channel.  Same as LEAVE.
+.TP
+.I PING
+Ping server.
+.TP
+.I QK <nickname>[ <nickname> ...]
+Kick users from channel.
+.TP
+.I QUERY [<nickname>]
+Route privmsgs from/to a user to this window.
+.TP
+.I QUIT [<comment>]
+Quit TIRC.  See BYE.
+.TP
+.I RAW <text>
+Send IRC command directly.
+.TP
+.I REHASH
+Let ircd reread ircd.conf.
+.TP
+.I RESTART
+Restart server.
+.TP
+.I SERVER <hostname> [<port>] [<password>]
+Connect to specified server.
+.TP
+.I SET <variable> <value>
+Control TIRC options.
+.TP
+.I SIGNAL <signal number>
+Send signal to SYSTEM child process.
+.TP
+.I SIGNOFF
+Quit TIRC.  See BYE.
+.TP
+.I SPAM <blacklist>
+Create spam discard keyword list.
+.TP
+.I SQUIT <server>
+Unlink server from network.
+.TP
+.I STATS [<query>] [<server>]
+Ask for server statistics.
+.TP
+.I SUMMON <user> [<server>]
+Call a user logged into the server machine to IRC.
+.TP
+.I SYSTEM [-msg <target>] <commandstring>
+Execute the specified shell-command in background and optionally route
+output to a channel or user on IRC.
+.TP
+.I TIME [<server>]
+Get time+date.  Same as DATE.
+.TP
+.I TIRC
+Display version info.
+.TP
+.I TRACE [<server>]
+Trace IRC route to server.
+.TP
+.I TOPIC <channel> [<newtopic>]
+Display or set channel topic.
+.TP
+.I UHOST <nickname>[ <nickname> ...]
+Send USERHOST query to server.
+.TP
+.I URL <command> [<filename>]
+Manages the URL catching mechanism.
+.TP
+.I UMODE <modechars>
+Changes user mode.
+.TP
+.I USERS [<server>]
+List users logged into server machine.
+.TP
+.I VERSION [<server>]
+Get ircd version.
+.TP
+.I W [<server>[,<nickmask>[,...]]
+Short for WHOIS.
+.TP
+.I WALLOPS <text>
+Write message to operators.
+.TP
+.I WHO <spec>
+List matching users.
+.TP
+.I WHOIS [<server>[,<nickmask>[,...]]
+Query information about users.
+.TP
+.I WHOWAS <nickname> [<count> [<server>]]
+Search server's nickname history.
+.TP
+.I WIN <function>
+Manage TIRC windows.
+.br
+.SH KEYBINDINGS
+TIRC's editor line behaves similar yet not identically to the vi text editor.
+In addition, the following keys are important to make optimal use of TIRC.
+.TP
+.I Ctrl+W
+Switch focus to next TIRC window region in command mode.  In input/overstrike
+mode, erase the last word. 
+.TP
+.I Ctrl+T
+Like Ctrl+W but backwards.
+.TP
+.I Ctrl+F or PageDn
+Page down in the current window's backscroll buffer.
+.TP
+.I Ctrl+B or PageUp
+Page up in the current window's backscroll buffer.
+.TP
+.I Ctrl+G
+Go to end of window's backscroll buffer.
+.TP
+.I Ctrl+L or Ctrl+R
+Redisplay screen from the backscroll buffer.  Also removes unlogged text
+like help information.
+.TP
+.I Ctrl+Z or Ctrl+Y
+Suspend TIRC (depends on your susp/dsusp character).
+.TP
+.I Ctrl+C
+Interrupt blocking system calls or conditionally exits TIRC.
+.TP
+.I Tab
+If at the beginning of an empty line, writes a response template for the
+last user you received/send a message from/to.  Pressing Tab several times
+then iterates through a small history.  If you press Tab in the middle of
+a line, it tries to complete the nickname you're typing from the current
+window's top channel.
+.TP
+.I Ctrl+V
+(lnext character) Insert the next character literally.  It might be required
+that you press Ctrl+V twice.  Control values are displayed by a '_' in the
+command line.
+.TP
+.I Ctrl+E
+Go after the end of editor line.
+.TP
+.I Ctrl+A
+Go to beginning of line.
+.TP
+.I Ctrl+D
+Delete next character.
+.TP
+.I Ctrl+K
+Delete to end of line.
+.TP
+.I Cursor keys
+Go left, right in line and up down in the command line history, respectively.
+.TP
+.I Backspace
+Delete char left to cursor.
+.TP
+.I Ctrl+U
+(or whatever you have as the line kill character) Kills the line as expected.
+You can undo a kill or modification by typing u in command mode.
+.TP
+.I Ctrl+P
+Toggles paste mode.  In paste mode, commands are not recognized and text
+is sent unaltered to the top channel/query.
+.TP
+.I /
+In command mode, this lets you search forward in the current window's
+backscroll buffer.  Extended (POSIX) regular expressions are matched if
+available on your system (basic REs otherwise).
+.TP
+.I ?
+Like / but searches backwards (finds latest occurances first).
+.TP
+.I n
+(command mode) Find the next match for a previously entered regex search
+string.
+.TP
+.I N
+Like n but searches in opposite direction.
+.TP
+.I q
+Aborts 'MORE' prompts.
+.TP
+.I :
+Insert the command character at beginning of line and set insert mode.
+.TP
+.I o
+Invoke the options and colours editor.
+.TP
+.I Ctrl+X-o or Ctrl+N
+Switch to next window (like Ctrl+W in command mode).
+.TP
+.I Ctrl+X-O
+Switch to previous window (like Ctrl+T in command mode).
+.TP
+.I Ctrl+X-2
+Create new window (like /WIN NEW).
+.TP
+.I Ctrl+X-0
+Delete current window (like /WIN DEL).
+.TP
+.I Ctrl+X-n
+Switch to next page.
+.TP
+.I Ctrl+X-p
+Switch to previous page.
+.TP
+.I Ctrl+X-b-<0-9>
+Switch to page number 0-9.
+.TP
+.I Ctrl+X-x
+Switch between last visited page and current one.
+.br
+.SH ENVIRONMENT
+TIRC uses the
+.I TERM
+environmental variable to obtain your terminal type.
+The
+.I LC_*
+variables are used by the C runtime system to determine the correct locale.
+The
+.I SHELL
+variable will be used to determine your login shell for the
+SYSTEM command.  If no SHELL variable is available, TIRC will use /bin/sh.
+.I HOME
+is used to obtain the pathname of your home directory.
+.br
+.SH FILES
+.TP
+.I /usr/local/share/tircrc
+Global startup file.
+.TP
+.I $HOME/.tircrc
+Your personal initialization config file.
+.TP
+.I /tmp
+The directory where temporary files go (only used at startup [eventually]).
+.br
+.SH BUGS
+Since TIRC is in alpha development version (experimental state), be prepared
+to encounter bugs.
+.LP
+There is a security hole in the DCC file and chat offer.  DCC accepts a
+connection from any host after sending the CTCP privmsg notifying your
+peer about the DCC offer.  Any person can connect instead of the one the DCC
+offer was intended for.  This is due to bad design of the DCC protocol, which
+doesn't provide any means of authentication.  
+Please take care never to transfer any confidential material over IRC or on
+DCCs.
+.LP
+If you are on a system for which we use SVIPC shared memory segments for
+providing shared memory, you have to cope with the oddities of System V IPC.
+In particular that means, if TIRC exits abnormally (killed by signal), the
+resources used by the kernel for the shared segments don't get freed and
+hang around until you remove them manually or the system gets rebooted.
+Have a look at ipcs(8) and ipcrm(8) on how to detect and get rid of them.
+.br
+.SH SEE ALSO
+irc(1), ircd(8), ircII(1). vi(1) for a listing of vi motions, re_format(7)
+for an explanation of extended regular expression syntax.
+.LP
+.I doc/rfc1459.txt
+\- J. Oikarinen, D. Reed, "Internet Relay Chat Protocol", May 1993. (RfC 1459)
+.LP
+.I doc/irc_dcc.txt
+\- T. Rollo, "A description of the DCC protocol".
+.LP
+.I doc/dccresum.txt
+\- T. Vonck, "DCC Resume".
+.br
+.SH COPYRIGHT
+Copyright (c) 1996, 1999 Matthias K. Buelow.
+.br
+All rights reserved.
+.sp
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+.sp
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+.br
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+.br
+3. Neither the name of the author nor the names of any co-contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+.sp
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+.sp 2
+TIRC comes with several bundled libc complementary functions, which are
+used only if the respective functionality is not available in libc.
+The following copyrights are taken from the bundled code and are herein
+reproduced as demanded by the authors and for giving credit to whom credit
+is due:
+.sp
+Copyright (c) 1990, 1993 The Regents of the University of California.  All rights reserved.
+.br
+Copyright 1992, 1993, 1994 Henry Spencer.  All rights reserved.
+.br
+Copyright (c) 1997 Theo de Raadt
+.SH AUTHORS
+TIRC has been developed by Matthias K. Buelow <token@mayn.de>.
+.br
+The dynamically loadable modules support and other things have been
+contributed by Richard Corke <rjc@rasi.demon.co.uk>.
+.br
+I'm very thankful to everyone who reported bugs and proposed fixes and
+enhancements.

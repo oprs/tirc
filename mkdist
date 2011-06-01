@@ -1,0 +1,15 @@
+#! /bin/sh
+
+#	$Id: mkdist,v 1.5 1997/10/26 00:18:39 token Exp $
+# Pack together a distribution archive which includes everything except
+# the RCS files.  Command line parameter is release level (0.49a for ex.).
+
+wd=`pwd`
+distdir=`basename $wd`
+cd ..
+rm -f tirc.tar && \
+tar cvf tirc.tar `find $distdir -type f | grep -v RCS` && \
+gzip tirc.tar && \
+mv tirc.tar.gz tirc-$1.tar.gz
+cd $wd
+

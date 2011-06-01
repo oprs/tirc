@@ -1,0 +1,48 @@
+$Old: Notes,v 1.70 1998/02/17 11:15:57 mkb Exp $
+
+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+Todo:
+
+*implementation*
+
+[mainly deprecated; tirc2, a complete rewrite, is on the way.
+ But if someone wants to continue with this source; I'll only
+ be fixing serious bugs. --mkb]
+
+- write dl api
+- place hooks
+- integrate modules + -makefiles in configure process
+
+*bugs*
+
+- Scrolling buggers a bit: openbsd+screen -> telnet freebsd host, TERM is pc3,
+  tunnelled through screen; bug: top line of each window gets cleared
+  [also observed in screen on some systems; this seems to be a bug in the
+   terminal description in termcap/terminfo]
+- dcc: master client blocks when exiting if slave blocked or sth, ^C cures that
+- dumping backscroll in win log seemed to dump only the first 8k
+  [not reproducable; was it just a nfs hiccup?]
+- spurious segv when editing command line reported (sigalrm race?)
+  [seems to be corrected?]
+  [sigalrm should not be the culprit anymore, if it was, since I moved
+   all critical stuff out of signal handlers now for 1.1.]
+
+*portability*
+
+- still doesn't build properly on nextstep, I think
+  [and on hpux, etc.  I don't care about that anymore.]
+
+*proposals*
+
+- include mcl's vhost
+  [I think this was supposed to do the same as Vadim Kolontsov's
+   bind patch now does.]
+
+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+General Notes
+
+- if you want to use libefence on *BSD, you might have to modify efence.c
+  so that it allows NULL as an argument to free().  The getpwent() function
+  obviously calls free with a null pointer.  Standard C allows calling free()
+  with a null pointer.
+

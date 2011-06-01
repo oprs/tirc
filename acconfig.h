@@ -1,0 +1,34 @@
+/* $Id: acconfig.h,v 1.15 1998/02/15 05:18:26 mkb Exp $ */
+
+#undef	DEBUGV
+#undef	HAVE_ANONSHRD_MMAP
+#undef	HAVE_DEVZERO_MMAP
+#undef	HAVE_REALFILE_MMAP
+#undef	HAVE_TERMCAP
+#undef	HAVE_TERMLIB
+#undef	HAVE_CURSES
+#undef	HAVE_NCURSES
+#undef	HAVE_TPARM
+#undef	HAVE_REGCOMP
+#undef	HAVE_REGEXEC
+#undef	HAVE_REGCMP
+#undef	HAVE_REGEX
+#undef	HAVE_SOCKETPAIR
+#undef	HAVE_ERRNO_H
+#undef	HAVE_SYS_ERRNO_H
+#undef	HAVE_VOIDPTR
+#undef	INCLUDE_TERM_H
+#undef	HAVE_REGFREE
+#undef	HAVE_TIOCGWINSZ
+#undef	HAVE_TIOCGSIZE
+#undef	HAVE_SVIPC_SHM
+#undef	HAVE_NETINET_IN_H
+#undef	HAVE_ARPA_INET_H
+#undef	sig_atomic_t
+#undef	EMULATE_REGCMP
+#undef	BRAINDEAD_GLIBC
+#undef	WITH_ANSI_COLOURS
+#undef	SPRINTF_RETURNS_CHARP
+#undef	WITH_DLMOD
+#undef	NDEBUG
+#undef	ptrdiff_t

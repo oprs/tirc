@@ -1,0 +1,61 @@
+head	1.1;
+access;
+symbols;
+locks;
+comment	@.\" @;
+
+
+1.1
+date	98.02.17.03.28.38;	author token;	state Exp;
+branches;
+next	;
+
+
+desc
+@document describing the TIRC dynamic modules interface.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@.\" $Id$
+.\" Copyright (c) 1998 Matthias K. Buelow.  All rights reserved.
+.\" See the file ``COPYRIGHT'' in the TIRC source distribution for
+.\" usage and distribution conditions.
+.fo 'TIRC Dynamic Modules Interface''%'
+.tp
+.(l C
+.ps 12
+.ft B
+TIRC IRC Client \(em Description of the Dynamic Modules Interface
+.ft
+.ps
+.sp 2
+.i "Matthias K. Buelow"
+.sp
+February 1998
+.sp
+97084 Wuerzburg, Germany
+.)l
+.sp 3
+.(l C
+.i Abstract
+.)l
+.(q
+.pp
+The TIRC IRC client supports runtime loading and unloading of
+shared libraries and dynamic binding of exported functions to TIRC
+commands.
+.pp
+The dlmod interface is mostly functional but still subject to change.
+In particular, a more abstract API hasn't yet been specified and
+implemented.
+.br
+The dlmod interface is mostly undocumented in this snapshot.  In future
+revisions, this file will contain an elaborate documentation on how to
+use and program for the dynamic interface.
+.)q
+@

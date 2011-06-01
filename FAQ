@@ -1,0 +1,129 @@
+$Id: FAQ,v 1.11 1998/02/20 18:20:26 token Exp $
+
+	TIRC -- Frequently Asked Questions (roughly unsorted)
+	+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+	This FAQ list corresponds to TIRC version 1.1.
+
+Q: Where can I get the latest versions of TIRC?
+A: ftp://ftp.mayn.de/pub/unix/software/Network/Irc/tirc
+
+Q: Where can I get further information or discuss the program?
+A: There's a low-traffic informal mailing list set up.  Please look at
+   the README file for more information.
+
+Q: Is TIRC distributed under the GPL (Gnu General Public License)?
+A: No, it isn't.  The author considers the GPL being too complicated
+   and too restrictive.  TIRC's license (as stated in the file "COPYRIGHT")
+   provides more freedom to all parties than the GPL and is much shorter
+   and more comprehensive.
+
+Q: Can I make changes or contribute to TIRC?
+A: Yes, you're welcome to do so.  Send me an e-mail if you have questions
+   or want to make a proposal of integrating your stuff into the main tree.
+   Also read the appropriate stuff in README concerning this topic.
+
+Q: Why doesn't this and that work like in ircII?
+A: Why don't you use ircII instead?
+
+Q: That means, I cannot use phoenix or my warskriptz with TIRC?
+A: No, TIRC does not support the ircII extension scripting language for
+   exactly that reason.
+
+Q: How can I change what TIRC sends to the server as my user@host string?
+   I.e., how can I fake the login name to say "kewld00d" instead of
+   "user0815"?
+A: You cannot, and you shouldn't.  You can override the real name with the
+   realname keyword in .tircrc.
+
+Q: Does the DCC RESUME work like in mIRC, are they compatible?
+A: It is supposed to be compatible since it implements the mIRC DCC RESUME
+   protocol.  I haven't tried it so far and will appreciate reports on that.
+
+Q: Does TIRC then support mIRC colours as well (I've read that TIRC has some
+   colour support)?
+A: No, mIRC colours are the plague.  You can filter out mIRC inline colours
+   with the HIDEMCOL option.
+
+Q: When I log in via telnet and start screen or something with
+   my terminal type set to foobar23, I get weird padding at the left
+   side of the screen which looks like <42>$ or similar. What's wrong?
+A: I've seen this as well.  I think it's a weird termcap entry.
+   Set the terminal type to vt220 or xterm (if appropriate) and it'll
+   go away.
+
+Q: Can TIRC connect to several IRC servers at once, like ircII with the
+   /window server command?
+A: No, it cannot and it will never be added.  Just start up a second client
+   if you want to chat on several networks at the same time.
+
+Q: How do I report other bugs?
+A: Just send me a detailed (as much as possible) description of the bug.
+   Don't send me corefiles, but you may send me the stack trace, as displayed
+   with a debugger when inspecting the core file.  Configure with
+   --enable-debug and try to reproduce the error.  I'd appreciate if you'd
+   send the bug report to the mailing list, so that others get to know of
+   the bug.  Please use the tircbug script to file bug reports, if possible.
+
+Q: My operating system is listed in the Ported file, yet TIRC doesn't seem
+   to build.
+A: I don't have the resources to test every version against every system
+   listed (for example, I don't have an AIX account anymore).  If it doesn't
+   work and you'd like to work it out, please contact me, it should be
+   possible to adapt newer versions without much hassle.
+
+Q: The vi emulation of the editor line isn't very complete, I'm missing
+   <insert your favourite vi motion here>
+A: I know.  But it's just an IRC client, not an editor.  I don't think it
+   would be worth the effort to add more vi details.
+
+Q: When I have ANSI-colours enabled, a DCC message that I receive looks
+   wrongly coloured, just the =nick gets displayed in the colour I chose.
+   What's wrong?
+A: Set the HIMSG option to ``off''.  Your terminal switches off colours
+   as well when the (bold) attribute is reset.  HIMSG is only really
+   useful on monochrome terminals anyway.
+
+Q: How can I prevent that TIRC reads the .tircrc file on every server
+   connect?
+A: It doesn't.  Since 0.50-alpha, there is the ``immediate'' keyword
+   available in the startup files.  Commands tagged immediate will be
+   executed once at startup, all others once per successful registration
+   with the server.
+
+Q: When I try to compile TIRC on an "up-to-date" Gnu/Linux system,
+   with glibc 2.x, shm.c fails to compile.  Why doesn't it work?
+A: Upgrading to the generic Gnu glibc from the old Linux Gnu-derived
+   libc seems to break /usr/include/sys/ipc.h and /usr/include/sys/shm.h.
+   TIRC 1.0 comes with a workaround;  to enable it, invoke configure
+   with the --with-linux-glibc option.
+
+Q: I am not running X11, but the terminal/console can change size, can
+   I change the size of a running TIRC?
+A: Yes.  The following example works on a FreeBSD syscons vty:
+   Suspend TIRC, and select your desired size (e.g. vidcontrol VGA_80x30).
+   To notify TIRC that screen size has changed, send it SIGWINCH:
+   kill -WINCH <pid>.  Then resume TIRC in foreground and it will adapt
+   to the new size.  Note: if you're running the fau screen tool (tty
+   multiplexer), just detach screen, change size, and reattach.
+   Screen obviously doesn't let SIGWINCH through, unfortunately.
+   On X11 (if you don't have screen or similar in between), you can simply
+   resize TIRC by resizing the terminal window.
+
+Q: How can I type national characters?
+A: Since 1.0 release, a bug has been fixed and it works now.
+   You have to set your locale correctly, though.  This depends mainly on
+   the LANG environment variable.  Refer to your manual pages for the
+   correct string.
+
+Q: Year 2000 problems?
+A: TIRC does not use 2-digit year representations.
+
+PLEASE NOTE:
+
+The 1.x tree is no longer proactively developed, it will only receive
+bug fixes and very small improvements.  Development has moved
+(theoretically) to the 2.0 tree, currently I have no time for rewriting
+TIRC, this will hopefully change in future.  Also a substantial amount
+of work and time has gone into writing this version so I don't feel a
+high urge for a rewrite when there are other things to do aswell.
+
